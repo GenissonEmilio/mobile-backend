@@ -49,3 +49,6 @@ npm install --save-dev typescript ts-node @types/node @types/express @types/bcry
 
 Agora que o banco está pronto, o seu amigo precisará rodar `npx prisma generate` e `npx prisma migrate dev` logo após clonar o projeto para que o banco dele fique idêntico ao seu.
 
+### npx prisma studio, para manipular o SQL do banco
+
+
