@@ -17,6 +17,8 @@
 
     "sourceMap": true,
 
+    "resolveJsonModule": true,
+
     "types": ["node"]
   },
 
