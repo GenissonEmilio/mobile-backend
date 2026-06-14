@@ -32,3 +32,8 @@ pnpm-debug.log*
 # OS metadata
 .DS_Store
 Thumbs.db
+
+# Prisma
+.prisma/
+prisma/dev.db
+prisma/dev.db-journal
