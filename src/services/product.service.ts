@@ -3,7 +3,6 @@ import { Prisma } from "@prisma/client";
 import { prisma } from "../prisma/client";
 import { AppError } from "../errors/AppError";
 import { ProductListDto } from "../dtos/product-list.dto";
-import { contains } from "class-validator";
 import { CreateProductDto, UpdateProductDto } from "../dtos/product.dto";
 
 export interface ProductListQuery {

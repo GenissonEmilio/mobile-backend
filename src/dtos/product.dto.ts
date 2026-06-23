@@ -5,7 +5,7 @@ export class IdParamDto {
     @Type(() => Number)
     @IsInt({ message: "ID must be a valid integer number" })
     @IsPositive({ message: "ID must be a number greater than zero" })
-    id?: number;
+    id!: number;
 }
 
 export class CreateProductDto {
@@ -27,24 +27,19 @@ export class CreateProductDto {
 }
 
 export class UpdateProductDto {
-  @IsOptional()
   @IsString()
   name!: string;
 
-  @IsOptional()
   @IsString()
   store!: string;
 
-  @IsOptional()
   @IsString()
   category!: string;
 
-  @IsOptional()
   @IsNumber()
   @IsPositive()
   currentPrice!: number;
 
-  @IsOptional()
   @IsString()
   emoji!: string;
 }

@@ -1,11 +1,14 @@
-import { plainToInstance } from "class-transformer";
+import { ClassConstructor, plainToInstance } from "class-transformer";
 import { validate, ValidationError } from "class-validator";
 import { Request, Response, NextFunction } from "express";
 import { AppError } from "../errors/AppError";
 
 type RequestSource = "body" | "query" | "params";
 
-export function validateDto(dtoClass: any, source: RequestSource = "body") {
+export function validateDto<T extends object> (
+    dtoClass: ClassConstructor<T>,
+    source: RequestSource = "body"
+) {
     return async (req: Request, res: Response, next: NextFunction) => {
         const instance = plainToInstance(dtoClass, req[source]);
 
