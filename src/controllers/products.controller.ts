@@ -24,8 +24,8 @@ export class ProductController {
 
     async findById(req: Request, res: Response, next: NextFunction) {
         try {
-            const { id } = req.params as unknown as IdParamDto;
-            const product = await this.productService.findById(Number(id));
+            const  id = Number(req.params.id);
+            const product = await this.productService.findById(id);
 
             return res.status(200).json(product);
         } catch (error) {
@@ -33,10 +33,13 @@ export class ProductController {
         }
     }
 
-    async create(req: Request, res: Response, next: NextFunction) {
+    async create(
+        req: Request<{}, {}, CreateProductDto>, 
+        res: Response, 
+        next: NextFunction
+    ) {
         try {
-            const body = req.body as CreateProductDto;
-            const newProduct = await this.productService.create(body);
+            const newProduct = await this.productService.create(req.body);
 
             return res.status(201).json(newProduct);
         } catch(error) {
@@ -44,11 +47,14 @@ export class ProductController {
         }
     }
 
-    async update(req: Request, res: Response, next: NextFunction) {
+    async update(
+        req: Request<{ id: string }, {}, UpdateProductDto>, 
+        res: Response, 
+        next: NextFunction
+    ) {
         try {
-            const { id } = req.params as unknown as IdParamDto;
-            const body = req.body as UpdateProductDto;
-            const updateProduct = await this.productService.update(Number(id), body);
+            const  id = Number(req.params.id);
+            const updateProduct = await this.productService.update(id, req.body);
 
             return res.status(200).json(updateProduct);
         } catch(error) {
@@ -58,8 +64,8 @@ export class ProductController {
 
     async delete(req: Request, res: Response, next: NextFunction) {
         try {
-            const { id } = req.params as unknown as IdParamDto;
-            await this.productService.delete(Number(id));
+            const  id = Number(req.params.id);
+            await this.productService.delete(id);
 
             return res.status(204).send();
         } catch(error) {
