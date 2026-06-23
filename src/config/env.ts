@@ -13,4 +13,9 @@ export const env = {
     PORT,
     DATABASE_URL,
     JWT_SECRET: process.env.JWT_SECRET!,
+    EXTERNAL_PRODUCTS_PROVIDER:
+        process.env.EXTERNAL_PRODUCTS_PROVIDER ?? "mercadolivre",
+    MERCADO_LIVRE_API_BASE_URL:
+        process.env.MERCADO_LIVRE_API_BASE_URL ?? "https://api.mercadolibre.com",
+    MERCADO_LIVRE_SITE_ID: process.env.MERCADO_LIVRE_SITE_ID ?? "MLB",
 };

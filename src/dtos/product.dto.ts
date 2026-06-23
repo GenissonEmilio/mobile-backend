@@ -1,4 +1,12 @@
-import { IsString, IsNumber, IsOptional, IsPositive, IsInt } from "class-validator";
+import {
+  IsInt,
+  IsNumber,
+  IsOptional,
+  IsPositive,
+  IsString,
+  Max,
+  Min,
+} from "class-validator";
 import { Type } from "class-transformer";
 
 export class IdParamDto {
@@ -24,6 +32,10 @@ export class CreateProductDto {
     @IsNumber({}, { message: "Price must be a number" })
     @IsPositive({ message: "Price must be greater than zero" })
     currentPrice!: number;
+
+    @IsOptional()
+    @IsString({ message: "External ID must be a string" })
+    externalId?: string;
 }
 
 export class UpdateProductDto {
@@ -42,5 +54,69 @@ export class UpdateProductDto {
 
   @IsString()
   emoji!: string;
+
+  @IsOptional()
+  @IsString()
+  externalId?: string;
+}
+
+export class ProductSearchDto {
+  @IsOptional()
+  @IsString()
+  q?: string;
+
+  @IsOptional()
+  @IsString()
+  store?: string;
+
+  @IsOptional()
+  @IsString()
+  category?: string;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber({}, { message: "minPrice must be a valid number" })
+  minPrice?: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber({}, { message: "maxPrice must be a valid number" })
+  maxPrice?: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt({ message: "limit must be an integer" })
+  @Min(1, { message: "limit must be greater than zero" })
+  @Max(50, { message: "limit must be at most 50" })
+  limit?: number;
+}
+
+export class ProductTrendingDto {
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt({ message: "limit must be an integer" })
+  @Min(1, { message: "limit must be greater than zero" })
+  @Max(50, { message: "limit must be at most 50" })
+  limit?: number;
+}
+
+export class PriceHistoryQueryDto {
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt({ message: "days must be an integer" })
+  @Min(1, { message: "days must be greater than zero" })
+  @Max(365, { message: "days must be at most 365" })
+  days?: number;
+}
+
+export class RecordPriceSnapshotDto {
+  @Type(() => Number)
+  @IsNumber({}, { message: "Price must be a number" })
+  @IsPositive({ message: "Price must be greater than zero" })
+  price!: number;
+
+  @IsOptional()
+  @IsString()
+  externalId?: string;
 }
 
