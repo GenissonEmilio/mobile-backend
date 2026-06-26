@@ -7,6 +7,7 @@ import {
     ExternalProductOffer,
     ExternalProductProvider,
 } from "../providers/external-product.provider";
+import { DummyJsonProvider } from "../providers/dummy-json.provider";
 import { MercadoLivreProvider } from "../providers/mercado-livre.provider";
 import {
     ExternalProductSearchDto,
@@ -15,9 +16,11 @@ import {
 
 export class ExternalProductService {
     private provider: ExternalProductProvider;
+    private fallbackProvider: ExternalProductProvider;
 
     constructor(provider = ExternalProductService.createProvider()) {
         this.provider = provider;
+        this.fallbackProvider = new DummyJsonProvider();
     }
 
     private static createProvider(): ExternalProductProvider {
@@ -116,17 +119,11 @@ export class ExternalProductService {
     }
 
     async search(query: ExternalProductSearchDto) {
-        return this.provider.search({
-            query: query.q,
-            limit: query.limit ?? 10,
-        });
+        return this.searchProvider(query.q, query.limit ?? 10);
     }
 
     async importProducts(data: ImportExternalProductsDto) {
-        const externalProducts = await this.provider.search({
-            query: data.q,
-            limit: data.limit ?? 10,
-        });
+        const externalProducts = await this.searchProvider(data.q, data.limit ?? 10);
 
         const importedProducts = [];
 
@@ -149,5 +146,16 @@ export class ExternalProductService {
             ).length,
             products: importedProducts,
         };
+    }
+
+    private async searchProvider(query: string, limit: number) {
+        try {
+            const products = await this.provider.search({ query, limit });
+            if (products.length > 0) return products;
+        } catch {
+            // Keep the app usable during demos if the primary marketplace blocks requests.
+        }
+
+        return this.fallbackProvider.search({ query, limit });
     }
 }
