@@ -9,31 +9,27 @@ import { IdParamDto } from "../dtos/product.dto";
 
 const alertRoutes = Router();
 
-// Todas as rotas de alertas exigem autenticação
 alertRoutes.use(authMiddleware);
 
-alertRoutes.get(
-    "/",
-    alertController.list.bind(alertController)
-);
+alertRoutes.get("/", alertController.list);
 
 alertRoutes.post(
-    "/",
-    validateDto(CreateAlertDto, "body"),
-    alertController.create.bind(alertController)
+  "/",
+  validateDto(CreateAlertDto, "body"),
+  alertController.create
 );
 
 alertRoutes.put(
-    "/:id",
-    validateDto(IdParamDto, "params"),
-    validateDto(UpdateAlertDto, "body"),
-    alertController.update.bind(alertController)
+  "/:id",
+  validateDto(IdParamDto, "params"),
+  validateDto(UpdateAlertDto, "body"),
+  alertController.update
 );
 
 alertRoutes.delete(
-    "/:id",
-    validateDto(IdParamDto, "params"),
-    alertController.delete.bind(alertController)
+  "/:id",
+  validateDto(IdParamDto, "params"),
+  alertController.delete
 );
 
-export { alertRoutes };
+export default alertRoutes;

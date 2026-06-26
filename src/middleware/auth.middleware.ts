@@ -1,30 +1,40 @@
-import { Request, Response, NextFunction } from "express";
-import { verifyToken } from "../utils/jwt";
+import { NextFunction, Request, Response } from "express";
+import { JwtPayload } from "jsonwebtoken";
+
 import { AppError } from "../errors/AppError";
+import { verifyToken } from "../utils/jwt";
 
-export const authMiddleware = (
-    req: Request,
-    res: Response,
-    next: NextFunction
-) => {
-    const authHeader = req.headers.authorization;
+interface AuthTokenPayload extends JwtPayload {
+  userId: number;
+}
 
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-        throw new AppError("Token not provided", 401);
-    }
+export function authMiddleware(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  const authHeader = req.headers.authorization;
 
-    const token = authHeader.split(" ")[1];
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return next(new AppError("Token not provided", 401));
+  }
 
-    try {
-        const payload = verifyToken(token) as { userId: number };
+  const [, token] = authHeader.split(" ");
 
-        req.user = {
-            id: payload.userId,
-            email: "",
-        };
+  if (!token) {
+    return next(new AppError("Invalid authorization header", 401));
+  }
 
-        next();
-    } catch {
-        throw new AppError("Invalid or expired token", 401);
-    }
-};
+  try {
+    const payload = verifyToken(token) as AuthTokenPayload;
+
+    req.user = {
+      id: payload.userId,
+      email: "",
+    };
+
+    return next();
+  } catch {
+    return next(new AppError("Invalid or expired token", 401));
+  }
+}

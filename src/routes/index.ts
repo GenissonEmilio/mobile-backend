@@ -3,7 +3,7 @@ import { Router } from "express";
 import { authRoutes } from "./auth.routes";
 import productRoutes from "./product.routes";
 import externalProductRoutes from "./external-products.routes";
-import { alertRoutes } from "./alert.routes";
+import alertRoutes from "./alert.routes";
 
 const router = Router();
 

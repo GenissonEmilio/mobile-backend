@@ -25,7 +25,12 @@ export function validateDto<T extends object> (
             return next(new AppError(errorMessages, 400));
         }
 
-        req[source] = instance;
+        Object.defineProperty(req, source, {
+            value: instance,
+            configurable: true,
+            enumerable: true,
+            writable: true,
+        });
         next();
     }
 }
