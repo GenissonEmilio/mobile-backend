@@ -119,11 +119,13 @@ export class ExternalProductService {
     }
 
     async search(query: ExternalProductSearchDto) {
-        return this.searchProvider(query.q, query.limit ?? 10);
+        const result = await this.searchProvider(query.q, query.limit ?? 10);
+        return result.products;
     }
 
     async importProducts(data: ImportExternalProductsDto) {
-        const externalProducts = await this.searchProvider(data.q, data.limit ?? 10);
+        const result = await this.searchProvider(data.q, data.limit ?? 10);
+        const externalProducts = result.products;
 
         const importedProducts = [];
 
@@ -134,7 +136,7 @@ export class ExternalProductService {
         }
 
         return {
-            provider: env.EXTERNAL_PRODUCTS_PROVIDER,
+            provider: result.provider,
             query: data.q,
             imported: importedProducts.length,
             created: importedProducts.filter((product) => product.importedStatus === "created")
@@ -151,11 +153,19 @@ export class ExternalProductService {
     private async searchProvider(query: string, limit: number) {
         try {
             const products = await this.provider.search({ query, limit });
-            if (products.length > 0) return products;
+            if (products.length > 0) {
+                return {
+                    provider: env.EXTERNAL_PRODUCTS_PROVIDER,
+                    products,
+                };
+            }
         } catch {
             // Keep the app usable during demos if the primary marketplace blocks requests.
         }
 
-        return this.fallbackProvider.search({ query, limit });
+        return {
+            provider: `${env.EXTERNAL_PRODUCTS_PROVIDER}->dummyjson`,
+            products: await this.fallbackProvider.search({ query, limit }),
+        };
     }
 }
